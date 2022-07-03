@@ -52,6 +52,7 @@ export default class Kamer {
             id: this._id,
             hotel: this._hotel,
             naam: this._naam,
+            aantalSterren: this._aantalSterren,
             van: this._van,
             tot: this._tot,
             prijs: this._prijs

@@ -1,6 +1,6 @@
-import searchKamers from "./kamers.js";
-
-import { v4 as uuidv4, v4 } from "uuid";
+import zoekKamers from "./kamers.js";
+import berekenKortingspercentage from "./vouchers.js";
+import reserveer from "./reservaties.js";
 
 const port = 3000;
 import express from "express";
@@ -26,11 +26,11 @@ app.get("/api/kamers", (req, res) => {
     } else if (!req.query.aantalPersonen) {
         res.status(400).send('Gelieve een aantal personen (> 0) mee te geven.');
     } else {
-        let beschikbareKamers = searchKamers(
+        let beschikbareKamers = zoekKamers(
             req.query.locatie, 
-            req.query.aantalSterren, 
-            req.query.aantalDagen, 
-            req.query.aantalPersonen);
+            parseInt(req.query.aantalSterren), 
+            parseInt(req.query.aantalDagen), 
+            parseInt(req.query.aantalPersonen));
         res.json(beschikbareKamers);
         console.log(`Er werden ${beschikbareKamers.length} beschikbare kamers naar de browser teruggestuurd.`);    
     }
@@ -39,18 +39,24 @@ app.get("/api/kamers", (req, res) => {
 // HTTP POST /api/vouchers
 // ***********************
 app.post("/api/vouchers", (req, res) => { 
-    // TODO: kortingspercentage berekenen op basis van vouchercode en totaalprijs.
+    let kortingspercentage = berekenKortingspercentage(
+        req.body.totaalprijs, 
+        req.body.vouchercode);
     res.json({ 
-        kortingspercentage: 10
+        kortingspercentage: kortingspercentage
     });
 });
 
 // HTTP POST /api/reservaties
 // ********************
 app.post("/api/reservaties", (req, res) => {
-    // TODO: username valideren, vouchercode (if any) nogmaals valideren en reservatienummer genereren.
+    let reservatienummer = reserveer(
+        req.body.username,
+        req.body.vouchercode,
+        req.body.kamerIds
+    )
     res.json({
-        reservatienummer: v4()
+        reservatienummer: reservatienummer
     });
 });
 
