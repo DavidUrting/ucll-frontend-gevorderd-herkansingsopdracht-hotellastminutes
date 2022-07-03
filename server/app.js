@@ -19,13 +19,14 @@ app.use(express.json());
 app.get("/api/kamers", (req, res) => {
     if (!req.query.locatie) {
         res.status(400).send('Gelieve een locatie mee te geven.');
-    } else if (!req.query.aantalSterren) {
+    } else if (!req.query.aantalSterren || isNaN(req.query.aantalSterren)) {
         res.status(400).send('Gelieve een aantal sterren (> 0) mee te geven.');
-    } else if (!req.query.aantalDagen) {
+    } else if (!req.query.aantalDagen || isNaN(req.query.aantalDagen)) {
         res.status(400).send('Gelieve een aantal dagen (> 0) mee te geven.');
-    } else if (!req.query.aantalPersonen) {
+    } else if (!req.query.aantalPersonen || isNaN(req.query.aantalPersonen)) {
         res.status(400).send('Gelieve een aantal personen (> 0) mee te geven.');
     } else {
+        // OK
         let beschikbareKamers = zoekKamers(
             req.query.locatie, 
             parseInt(req.query.aantalSterren), 
@@ -39,25 +40,41 @@ app.get("/api/kamers", (req, res) => {
 // HTTP POST /api/vouchers
 // ***********************
 app.post("/api/vouchers", (req, res) => { 
-    let kortingspercentage = berekenKortingspercentage(
-        req.body.totaalprijs, 
-        req.body.vouchercode);
-    res.json({ 
-        kortingspercentage: kortingspercentage
-    });
+    if (!req.body.totaalprijs || isNaN(req.body.totaalprijs)) {
+        res.status(400).send('Gelieve een totaalprijs > 0 mee te geven.');
+    } else if (req.body.vouchercode && (isNaN(req.body.vouchercode) || req.body.vouchercode.toString().length !== 10)) {
+        res.status(400).send('Indien een vouchercode wordt opgegeven moet dat een number zijn van 10 cijfers.');
+    } else {
+        // OK
+        let kortingspercentage = berekenKortingspercentage(
+            req.body.totaalprijs, 
+            req.body.vouchercode);
+        res.json({ 
+            kortingspercentage: kortingspercentage
+        });    
+    }
 });
 
 // HTTP POST /api/reservaties
 // ********************
 app.post("/api/reservaties", (req, res) => {
-    let reservatienummer = reserveer(
-        req.body.username,
-        req.body.vouchercode,
-        req.body.kamerIds
-    )
-    res.json({
-        reservatienummer: reservatienummer
-    });
+    if (!req.body.username) {
+        res.status(400).send('Gelieve een username mee te geven.');
+    } else if (req.body.vouchercode && (isNaN(req.body.vouchercode) || req.body.vouchercode.toString().length !== 10)) {
+        res.status(400).send('Indien een vouchercode wordt opgegeven moet dat een number zijn van 10 cijfers.');
+    } else if (!req.body.kamerIds || !Array.isArray(req.body.kamerIds) || req.body.kamerIds.length === 0) {
+        res.status(400).send('Gelieve een kamerIds array van numbers mee te geven. Deze array moet minstens één kamer ID bevatten.');
+    } else {
+        // OK
+        let reservatienummer = reserveer(
+            req.body.username,
+            req.body.vouchercode,
+            req.body.kamerIds
+        )
+        res.json({
+            reservatienummer: reservatienummer
+        });    
+    }
 });
 
 

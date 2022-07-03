@@ -2,12 +2,13 @@
 export default class Kamer {
     static _laatstToegekendeId = -1;
 
-    constructor(locatie, hotel, naam, aantalSterren, van, tot, prijs) {
+    constructor(locatie, hotel, naam, aantalSterren, aantalPersonen, van, tot, prijs) {
         this._id = ++Kamer._laatstToegekendeId;
         this._locatie = locatie;
         this._hotel = hotel; // hotel naam
         this._naam = naam; // kamer naam
         this._aantalSterren = aantalSterren;
+        this._aantalPersonen = aantalPersonen;
         this._van = van;
         this._tot = tot;
         this._prijs = prijs;
@@ -33,6 +34,10 @@ export default class Kamer {
         return this._aantalSterren;
     }
 
+    get aantalPersonen() {
+        return this._aantalPersonen;
+    }
+
     get van() {
         return this._van;
     }
@@ -49,13 +54,15 @@ export default class Kamer {
     // Op deze manier zorgen we ervoor dat er geen _ in de propertynamen zitten.
     toJSON() {
         return {
-            id: this._id,
-            hotel: this._hotel,
-            naam: this._naam,
-            aantalSterren: this._aantalSterren,
-            van: this._van,
-            tot: this._tot,
-            prijs: this._prijs
+            id: this.id,
+            locatie: this.locatie,
+            hotel: this.hotel,
+            naam: this.naam,
+            aantalSterren: this.aantalSterren,
+            aantalPersonen: this.aantalPersonen,
+            van: this.van,
+            tot: this.tot,
+            prijs: this.prijs
         };
     }
 }
