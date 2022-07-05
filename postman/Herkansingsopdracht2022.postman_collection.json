@@ -12,7 +12,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/kamers?locatie=Oostende&aantalSterren=4&aantalDagen=2&aantalPersonen=2",
+					"raw": "http://localhost:3000/api/kamers?locatie=Oostende&aantalSterren=4&aantalNachten=2&aantalPersonen=2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -32,7 +32,7 @@
 							"value": "4"
 						},
 						{
-							"key": "aantalDagen",
+							"key": "aantalNachten",
 							"value": "2"
 						},
 						{
@@ -80,7 +80,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"timbernerslee\",\r\n    \"vouchercode\": null,\r\n    \"kamerIds\": [1, 2, 10, 11]\r\n}",
+					"raw": "{\r\n    \"username\": \"timbernerslee\",\r\n    \"vouchercode\": null,\r\n    \"kamerIds\": [1, 2]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

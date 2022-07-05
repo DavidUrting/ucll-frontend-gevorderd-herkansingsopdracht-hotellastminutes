@@ -23,9 +23,10 @@ const kamers = [
 // Onderstaande functie geeft willekeurig beschikbare kamers terug.
 // Aangezien het willekeurig is, kan elke call een verschillend resultaat teruggeven.
 // In een realistisch scenario zal er natuurlijk gebruik worden gemaakt van een database met beschikbaarheden.
-function zoekKamers(locatie, aantalSterren, aantalDagen, aantalPersonen) {
+function zoekKamers(locatie, aantalSterren, aantalNachten, aantalPersonen) {
     let beschikbareKamers = [];
     let now = new Date();
+    let nowUtcMidday = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 12)); // Er wordt steeds van de middag gestart (UTC).
 
     // uit de lijst van kamers worden de kamers gefilterd die voldoen aan het aantal gevraagde sterren.
     let kamersMetGewenstAantalSterren = kamers.filter(dk => dk.aantalSterren === aantalSterren);
@@ -38,8 +39,8 @@ function zoekKamers(locatie, aantalSterren, aantalDagen, aantalPersonen) {
     // Indien er meer personen zijn dan wat de kamer kan bieden, worden meerdere gelijkaardige kamers toegevoegd.
     for (let i = 0; i < aantalBeschikbareKamers; i++) {
         let randomKamerIndex = Math.floor(Math.random() * kamersMetGewenstAantalSterren.length);
-        let randomVanOffsetInMsec = Math.floor(Math.random() * aantalDagen) * dagInMsec;
-        let randomTotOffsetInMsec = Math.max(randomVanOffsetInMsec + dagInMsec, Math.round(Math.random() * aantalDagen) * dagInMsec);
+        let randomVanOffsetInMsec = Math.floor(Math.random() * aantalNachten) * dagInMsec;
+        let randomTotOffsetInMsec = Math.max(randomVanOffsetInMsec + dagInMsec, Math.round(Math.random() * aantalNachten) * dagInMsec);
         let aantalBenodigdeKamers = Math.max(1, Math.floor(aantalPersonen / kamersMetGewenstAantalSterren[randomKamerIndex].aantalPersonen));
         for (let j = 0; j < aantalBenodigdeKamers; j++) {
             beschikbareKamers.push(new Kamer(
@@ -48,9 +49,9 @@ function zoekKamers(locatie, aantalSterren, aantalDagen, aantalPersonen) {
                 kamersMetGewenstAantalSterren[randomKamerIndex].naam,
                 kamersMetGewenstAantalSterren[randomKamerIndex].aantalSterren,
                 kamersMetGewenstAantalSterren[randomKamerIndex].aantalPersonen,
-                new Date(now.getTime() + randomVanOffsetInMsec),
-                new Date(now.getTime() + randomTotOffsetInMsec),
-                kamersMetGewenstAantalSterren[randomKamerIndex].prijs
+                new Date(nowUtcMidday.getTime() + randomVanOffsetInMsec),
+                new Date(nowUtcMidday.getTime() + randomTotOffsetInMsec),
+                kamersMetGewenstAantalSterren[randomKamerIndex].prijsPerNacht
             ));    
         }
     }

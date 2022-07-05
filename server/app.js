@@ -14,15 +14,15 @@ app.use(express.json());
 // HTTP GET /api/kamers
 // ********************
 // Geeft een JSON array van alle beschikbare kamers terug. 
-// Deze array bestaat uit objecten met id (number), locatie (string), hotel (string), naam (string), van (number), tot (number) en prijs (number) properties.
+// Deze array bestaat uit objecten met id (number), locatie (string), hotel (string), naam (string), van (number), tot (number) en prijsPerNacht (number) properties.
 // Dus een array van deze vorm: [{ "id": 0, "locatie": "Oostende", "hotel": "BelEtage"}, ...]
 app.get("/api/kamers", (req, res) => {
     if (!req.query.locatie) {
         res.status(400).send('Gelieve een locatie mee te geven.');
     } else if (!req.query.aantalSterren || isNaN(req.query.aantalSterren)) {
         res.status(400).send('Gelieve een aantal sterren (> 0) mee te geven.');
-    } else if (!req.query.aantalDagen || isNaN(req.query.aantalDagen)) {
-        res.status(400).send('Gelieve een aantal dagen (> 0) mee te geven.');
+    } else if (!req.query.aantalNachten || isNaN(req.query.aantalNachten)) {
+        res.status(400).send('Gelieve een aantal nachten (> 0) mee te geven.');
     } else if (!req.query.aantalPersonen || isNaN(req.query.aantalPersonen)) {
         res.status(400).send('Gelieve een aantal personen (> 0) mee te geven.');
     } else {
@@ -30,7 +30,7 @@ app.get("/api/kamers", (req, res) => {
         let beschikbareKamers = zoekKamers(
             req.query.locatie, 
             parseInt(req.query.aantalSterren), 
-            parseInt(req.query.aantalDagen), 
+            parseInt(req.query.aantalNachten), 
             parseInt(req.query.aantalPersonen));
         res.json(beschikbareKamers);
         console.log(`Er werden ${beschikbareKamers.length} beschikbare kamers naar de browser teruggestuurd.`);    
@@ -39,6 +39,9 @@ app.get("/api/kamers", (req, res) => {
 
 // HTTP POST /api/vouchers
 // ***********************
+// Geeft een JSON object terug met een 'kortingspercentage' property (number).
+// Een kortingspercentage is een getal tussen 0 en 100.
+// In de request body moet je een JSON object meegeven met 'totaalprijs' (number) en 'vouchercode' (number) properties.
 app.post("/api/vouchers", (req, res) => { 
     if (!req.body.totaalprijs || isNaN(req.body.totaalprijs)) {
         res.status(400).send('Gelieve een totaalprijs > 0 mee te geven.');
@@ -56,7 +59,10 @@ app.post("/api/vouchers", (req, res) => {
 });
 
 // HTTP POST /api/reservaties
-// ********************
+// **************************
+// Geeft een JSON object terug met een 'reservatienummer' property (string).
+// Een reservatienummer is een UUID.
+// In de request body moet je een JSON object meegeven met 'username' (string), 'vouchercode' (number) en 'kamerIds' (array van number) properties.
 app.post("/api/reservaties", (req, res) => {
     if (!req.body.username) {
         res.status(400).send('Gelieve een username mee te geven.');

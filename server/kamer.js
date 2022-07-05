@@ -2,7 +2,7 @@
 export default class Kamer {
     static _laatstToegekendeId = -1;
 
-    constructor(locatie, hotel, naam, aantalSterren, aantalPersonen, van, tot, prijs) {
+    constructor(locatie, hotel, naam, aantalSterren, aantalPersonen, van, tot, prijsPerNacht) {
         this._id = ++Kamer._laatstToegekendeId;
         this._locatie = locatie;
         this._hotel = hotel; // hotel naam
@@ -11,7 +11,7 @@ export default class Kamer {
         this._aantalPersonen = aantalPersonen;
         this._van = van;
         this._tot = tot;
-        this._prijs = prijs;
+        this._prijsPerNacht = prijsPerNacht;
     }
 
     get id() {
@@ -46,8 +46,8 @@ export default class Kamer {
         return this._tot;
     }
 
-    get prijs() {
-        return this._prijs;
+    get prijsPerNacht() {
+        return this._prijsPerNacht;
     }
 
     // JSON.stringify zal standaard deze methode aanroepen, alvoerens om te zetten naar een JSON string.
@@ -62,7 +62,7 @@ export default class Kamer {
             aantalPersonen: this.aantalPersonen,
             van: this.van,
             tot: this.tot,
-            prijs: this.prijs
+            prijsPerNacht: this.prijsPerNacht
         };
     }
 }
